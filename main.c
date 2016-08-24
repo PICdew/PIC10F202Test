@@ -18,14 +18,34 @@ You should have received a copy of the GNU Lesser General Public License
 along with PIC10F202Test.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
 
-/*
- * 
- */
-int main(int argc, char** argv) {
+// CONFIG
+#pragma config WDTE = OFF       // Watchdog Timer (WDT disabled)
+#pragma config CP = OFF         // Code Protect (Code protection off)
+#pragma config MCLRE = ON       // Master Clear Enable (GP3/MCLR pin function  is MCLR)
 
-    return (EXIT_SUCCESS);
+//#include <10F202.h> 
+#include <xc.h>
+
+#define _XTAL_FREQ 4000000
+
+
+asm( " org     0x000 " );
+asm( " movwf   0xFC " );
+
+
+
+void main(void)
+{
+    
+//GP0, GP1, GP2, GP*/MCLR
+    TRISGPIO = 0;
+    
+    while(1){
+        GP0 = 1;
+       __delay_ms(500);
+       GP0 = 0;
+       __delay_ms(500);
+    }
+    
 }
-
