@@ -29,23 +29,28 @@ along with PIC10F202Test.  If not, see <http://www.gnu.org/licenses/>.
 
 #define _XTAL_FREQ 4000000
 
+//#pragma FOSC4_bit FC
 
-asm( " org     0x000 " );
-asm( " movwf   0xFC " );
+//asm( " org     0x000 " );
+//asm( " movwf   0xFC " );
+
+
 
 
 
 void main(void)
 {
+    asm("MOVLW 0xFA");  //FC = 100.3, F0 = 97.3, FA=100.02
+    asm("MOVWF OSCCAL");
     
 //GP0, GP1, GP2, GP*/MCLR
     TRISGPIO = 0;
     
     while(1){
         GP0 = 1;
-       __delay_ms(500);
+       __delay_ms(20);
        GP0 = 0;
-       __delay_ms(500);
+       __delay_ms(20);
     }
     
 }
