@@ -108,18 +108,27 @@ void main(void)
 		//pwmValue = (GPIO  & 0b00001110) >> 1;
 		pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
 		
+/*
+//Table Time ON vs Current:
+0   50 mA
+5  150
+12 490
+20 600
+25 240 ???
+30 380 ???
+35 720 		
+40 930  (always on)		
+*/
 #define ptotal 40
+		
 #define p0 0
-#define p1 5
+#define p1 5 
 #define p2 12 
 #define p3 20
 #define p4 25
 #define p5 30
 #define p6 35
 #define p7 40
-
-#define p8 35
-#define p9 40
 		
 		//switchTimer = 0;
 		switch(pwmValue){
@@ -217,30 +226,6 @@ void main(void)
 					__delay_us(p7);
 					//GP0 = 0;
 					__delay_us(ptotal-p7);
-				}
-				break;
-			case 8:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p8);
-					GP0 = 0;
-					__delay_us(ptotal-p8);
-				}
-				break;
-			case 9:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p9);
-					//GP0 = 0;
-					//__delay_us(ptotal-p9);
 				}
 				break;
 			default:
