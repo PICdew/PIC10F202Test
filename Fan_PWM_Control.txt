@@ -1,0 +1,16 @@
+Normal PWM Fan Pinout
+
+PinNr Color Function
+1 Red		12V Power Supply
+2 Black		GND
+3 Yellow	Tacho out /Fan-Speed Signal out(open-collector)
+4 Blue		PWM control input (100% PWM = max speed, 0% PWM = stop)
+
+
+Attention Delta Fan PFC0912DE 4.23A 12V has inverse pinout. Pin 3 Yellow and pin 4 Blue functions are swapped.
+3 Yellow = PWM control input
+4 Blue = Fan-Speed out
+
+Additional the PWM levels are inverted:
+0% PWM = max speed
+100% PWM = stop
