@@ -85,9 +85,9 @@ void main(void)
 	switchValueOld = GPIO & 0b1110; //delet GP0, because this is no input
 	switchValueOld = switchValueOld >> 1; //LSB right justified
 	
-	//int i = 0;
+	int i = 0;
 	uint8_t switchTimer = 0;
-	__delay_ms(10.5);
+	//__delay_ms(10.5);
 	
 	//main loop
 	while(1){
@@ -121,6 +121,13 @@ void main(void)
 40 930  (always on)		
 */
 
+		GP0 = 1;
+		for(i=0;i<pwmValue;i++)
+			__delay_ms(2);
+		GP0 = 0;
+		for(i=0;i<(7-pwmValue);i++)
+			__delay_ms(2);
+		
 /*
  #define p0 0
 #define p1 5 
@@ -132,6 +139,7 @@ void main(void)
 #define p7 40
  */		
 
+		/*
 #define ptotal 10		
 
 #define p0 0
@@ -243,7 +251,7 @@ void main(void)
 			default:
 				break;
 		}
-		
+		*/
 		
 /*
 #define ptotal 30
