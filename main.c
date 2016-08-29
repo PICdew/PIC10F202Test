@@ -21,6 +21,18 @@ along with PIC10F202Test.  If not, see <http://www.gnu.org/licenses/>.
 //Attention: Programm Space in Flash set to 0..1FE in Project settings
 //because the last row is used for the oscal calibration value
 
+/*
+//Table FAN San Ace 80: Time ON vs Current:
+0   50 mA
+5  150
+12 490
+20 600
+25 
+30 
+35 720 		
+40 930  (always on)		
+*/
+
 
 // CONFIG
 #pragma config WDTE = OFF       // Watchdog Timer (WDT disabled)
@@ -55,363 +67,38 @@ void main(void)
     asm("MOVLW 0xFE");  //FC = 100.3, F0 = 97.3, FA=100.02, FE = 1.0005MHz OSC/4 Clock-out, LSB = FOSC4 don't set!
     asm("MOVWF OSCCAL");
     
-	//GP0, GP1, GP2, GP*/MCLR
+	//GP0, GP1, GP2, GP3/MCLR
     TRIS = 0b1110; //Inputs = 1, GP0 = Output, TRIS = TRISGPIO
 	//ENABLE: weak-pullups, Timer0 intosc source, Prescaler for WDT - no Prescaler for Timer0
+	//Attention: no Weak-Pullup available on GP2
 	OPTION = (1<<nCHANWAKE)|(0<<nWEAKPULL)|(0<<T0CKIPIN)|(0<<T0NEGEDGE)|(1<<PRESCALWDT); 
-	
-	//set INTOSC/4 Output on GP2
-	//OSCCAL |= 0b00000001;
-	//or:
-	//FOSC4 = 1;
-	//1.0006052 MHz INTOSC/4 was reached with OSCAL = 0xFF
-	
-	//PWM for FAN: 25kHz, Dutycycle 0 to 100%
-	//25kHz = 40us = 0.04ms
-	
-	//4MHz INTOSC, CPU = 1MHZ, = 1us
-	
-	//8-Bit Timer init:
-	GP0 = 0;
-//#define pvalue 20
 
-#define pmax 9
+		//PWM for FAN: 25kHz, Dutycycle 0 to 100%
+	//25kHz = 40us = 0.04ms
+	//at the moment used 7ms Period length, works also
+	
+	//GP0 output init
+	GP0 = 0;
 
 	uint8_t pwmValue = 1;
-	
-	uint8_t switchBuffer = 0;
-	uint8_t switchValueOld = 0;
-	
-	switchValueOld = GPIO & 0b1110; //delet GP0, because this is no input
-	switchValueOld = switchValueOld >> 1; //LSB right justified
-	
 	int i = 0;
-	uint8_t switchTimer = 0;
-	//__delay_ms(10.5);
 	
 	//main loop
 	while(1){
-		/*
-		switchBuffer = GPIO & 0b1110; //delet GP0, because this is no input
-		switchBuffer = switchBuffer >> 1; //LSB right justified
-		
-		if(switchBuffer > switchValueOld){ //rotation to the right, higher value
-			if(pwmValue < pmax){
-				pwmValue++;
-			}
-		}
-		else if(switchBuffer < switchValueOld){ //rotation to the left, lower value
-			if(pwmValue > 0){
-				pwmValue--;
-			}
-		}
-		*/
-		//pwmValue = (GPIO  & 0b00001110) >> 1;
+		//read Rotary switch into variable pwmValue, because LSB of Rotary Switch is unused, shift 1 right
 		pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
 		
-/*
-//Table Time ON vs Current:
-0   50 mA
-5  150
-12 490
-20 600
-25 240 ???
-30 380 ???
-35 720 		
-40 930  (always on)		
-*/
-
-		GP0 = 1;
-		for(i=0;i<pwmValue;i++)
-			__delay_ms(2);
-		GP0 = 0;
-		for(i=0;i<(7-pwmValue);i++)
-			__delay_ms(2);
-		
-/*
- #define p0 0
-#define p1 5 
-#define p2 12 
-#define p3 20
-#define p4 25
-#define p5 30
-#define p6 35
-#define p7 40
- */		
-
-		/*
-#define ptotal 10		
-
-#define p0 0
-#define p1 1 
-#define p2 2 
-#define p3 3
-#define p4 4
-#define p5 6
-#define p6 8
-#define p7 10
-		
-		switch(pwmValue){
-			case 0:
-				while(1){ 
-					GP0 = 0;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					//__delay_us(p0);
-					//GP0 = 0;
-					__delay_ms(ptotal-p0);
-				}
-				break;
-			case 1:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p1);
-					GP0 = 0;
-					__delay_ms(ptotal-p1);
-				}
-				break;
-			case 2:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p2);
-					GP0 = 0;
-					__delay_ms(ptotal-p2);
-				}
-				break;
-			case 3:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p3);
-					GP0 = 0;
-					__delay_ms(ptotal-p3);
-				}
-				break;
-			case 4:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p4);
-					GP0 = 0;
-					__delay_ms(ptotal-p4);
-				}
-				break;
-			case 5:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p5);
-					GP0 = 0;
-					__delay_ms(ptotal-p5);
-				}
-				break;
-			case 6:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p6);
-					GP0 = 0;
-					__delay_ms(ptotal-p6);
-				}
-				break;
-			case 7:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_ms(p7);
-					//GP0 = 0;
-					__delay_ms(ptotal-p7);
-				}
-				break;
-			default:
-				break;
-		}
-		*/
-		
-/*
-#define ptotal 30
-		
-#define p0 0
-#define p1 1 
-#define p2 8 
-#define p3 12
-#define p4 16
-#define p5 20
-#define p6 25
-#define p7 30
-		
-		switch(pwmValue){
-			case 0:
-				while(1){ 
-					GP0 = 0;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					//__delay_us(p0);
-					//GP0 = 0;
-					__delay_us(ptotal-p0);
-				}
-				break;
-			case 1:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p1);
-					GP0 = 0;
-					__delay_us(ptotal-p1);
-				}
-				break;
-			case 2:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p2);
-					GP0 = 0;
-					__delay_us(ptotal-p2);
-				}
-				break;
-			case 3:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p3);
-					GP0 = 0;
-					__delay_us(ptotal-p3);
-				}
-				break;
-			case 4:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p4);
-					GP0 = 0;
-					__delay_us(ptotal-p4);
-				}
-				break;
-			case 5:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p5);
-					GP0 = 0;
-					__delay_us(ptotal-p5);
-				}
-				break;
-			case 6:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p6);
-					GP0 = 0;
-					__delay_us(ptotal-p6);
-				}
-				break;
-			case 7:
-				while(1){
-					GP0 = 1;
-					switchTimer++;
-					if(switchTimer == 0){
-						break;
-					}
-					__delay_us(p7);
-					//GP0 = 0;
-					__delay_us(ptotal-p7);
-				}
-				break;
-			default:
-				break;
-		}
-		*/
-		
-		/*
 		GP0 = 1;
 		for(i=0;i<pwmValue;i++){
-			__delay_us(1);
+			__delay_ms(2);
 		}
 		GP0 = 0;
-		for(i=0;i<(pmax-pwmValue);i++){
-			__delay_us(1);
+		for(i=0;i<(7-pwmValue);i++){
+			__delay_ms(2);
 		}
-		*/		
-		
-		//GP0 = 1;
-		/*
-		int i;
-		for(i=0;i<pwmValue;i++){
-			//asm("nop");
-		}
-		*/
-		/*int i = 0;
-		while(i<pwmValue){
-			i++;
-		}*/
-		
-		//GP0 = 0;
-		/*
-		for(i=0;i<(ptotal - pwmValue);i++){
-			//asm("nop");
-		}
-		*/
-		
-		/*
-		i = 0;
-		while(i<pwmValue){
-			i++;
-		}
-		*/
-				
-		/*
-		GP0 = 1; //probably use HIGH-Impendance mode instead of PULL-HIGH: TRIS = 0b0001;
-		//TRIS = 0b0001; //works, but rising edge is not steep because of the weak-pullup
-		__delay_us(pvalue);
-
-		GP0 = 0;  //TRISGIPIO = 0b0000;
-		__delay_us(ptotal-pvalue);
-		*/
     }
     
 }
+
+
+
