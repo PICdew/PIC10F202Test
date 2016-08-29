@@ -119,9 +119,9 @@ void main(void)
 35 720 		
 40 930  (always on)		
 */
-#define ptotal 40
-		
-#define p0 0
+
+/*
+ #define p0 0
 #define p1 5 
 #define p2 12 
 #define p3 20
@@ -129,6 +129,20 @@ void main(void)
 #define p5 30
 #define p6 35
 #define p7 40
+ */		
+		
+#define ptotal 30
+		
+#define p0 0
+#define p1 1 
+#define p2 8 
+#define p3 12
+#define p4 16
+#define p5 20
+#define p6 25
+#define p7 30
+		
+
 		
 		//switchTimer = 0;
 		switch(pwmValue){
