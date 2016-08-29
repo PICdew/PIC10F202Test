@@ -33,14 +33,12 @@ along with PIC10F202Test.  If not, see <http://www.gnu.org/licenses/>.
 40 930  (always on)		
 */
 
-
-// CONFIG
+// CONFIG (FUSE-Bits)
 #pragma config WDTE = OFF       // Watchdog Timer (WDT disabled)
 #pragma config CP = OFF         // Code Protect (Code protection off)
 #pragma config MCLRE = OFF       // Master Clear Enable (GP3/MCLR pin function  is MCLR)
 
-//#include <10F202.h> 
-#include <xc.h>
+#include <xc.h> //#include <10F202.h>, is included by xc.h
 #include <stdint.h>
 
 #define _XTAL_FREQ 4000000
@@ -73,7 +71,7 @@ void main(void)
 	//Attention: no Weak-Pullup available on GP2
 	OPTION = (1<<nCHANWAKE)|(0<<nWEAKPULL)|(0<<T0CKIPIN)|(0<<T0NEGEDGE)|(1<<PRESCALWDT); 
 
-		//PWM for FAN: 25kHz, Dutycycle 0 to 100%
+	//PWM for FAN: 25kHz, Dutycycle 0 to 100%
 	//25kHz = 40us = 0.04ms
 	//at the moment used 7ms Period length, works also
 	
@@ -97,7 +95,6 @@ void main(void)
 			__delay_ms(2);
 		}
     }
-    
 }
 
 
