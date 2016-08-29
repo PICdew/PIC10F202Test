@@ -87,6 +87,7 @@ void main(void)
 	
 	//int i = 0;
 	uint8_t switchTimer = 0;
+	__delay_ms(10.5);
 	
 	//main loop
 	while(1){
