@@ -130,7 +130,121 @@ void main(void)
 #define p6 35
 #define p7 40
  */		
+
+#define ptotal 10		
+
+#define p0 0
+#define p1 1 
+#define p2 2 
+#define p3 3
+#define p4 4
+#define p5 6
+#define p6 8
+#define p7 10
 		
+		switch(pwmValue){
+			case 0:
+				while(1){ 
+					GP0 = 0;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					//__delay_us(p0);
+					//GP0 = 0;
+					__delay_ms(ptotal-p0);
+				}
+				break;
+			case 1:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p1);
+					GP0 = 0;
+					__delay_ms(ptotal-p1);
+				}
+				break;
+			case 2:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p2);
+					GP0 = 0;
+					__delay_ms(ptotal-p2);
+				}
+				break;
+			case 3:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p3);
+					GP0 = 0;
+					__delay_ms(ptotal-p3);
+				}
+				break;
+			case 4:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p4);
+					GP0 = 0;
+					__delay_ms(ptotal-p4);
+				}
+				break;
+			case 5:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p5);
+					GP0 = 0;
+					__delay_ms(ptotal-p5);
+				}
+				break;
+			case 6:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p6);
+					GP0 = 0;
+					__delay_ms(ptotal-p6);
+				}
+				break;
+			case 7:
+				while(1){
+					GP0 = 1;
+					switchTimer++;
+					if(switchTimer == 0){
+						break;
+					}
+					__delay_ms(p7);
+					//GP0 = 0;
+					__delay_ms(ptotal-p7);
+				}
+				break;
+			default:
+				break;
+		}
+		
+		
+/*
 #define ptotal 30
 		
 #define p0 0
@@ -142,9 +256,6 @@ void main(void)
 #define p6 25
 #define p7 30
 		
-
-		
-		//switchTimer = 0;
 		switch(pwmValue){
 			case 0:
 				while(1){ 
@@ -245,6 +356,7 @@ void main(void)
 			default:
 				break;
 		}
+		*/
 		
 		/*
 		GP0 = 1;
