@@ -68,8 +68,9 @@ void main(void)
 	//GP0, GP1, GP2, GP3/MCLR
     TRIS = 0b1110; //Inputs = 1, GP0 = Output, TRIS = TRISGPIO
 	//ENABLE: weak-pullups, Timer0 intosc source, Prescaler for WDT - no Prescaler for Timer0
+	//Prescaler: 64 = 101
 	//Attention: no Weak-Pullup available on GP2
-	OPTION = (1<<nCHANWAKE)|(0<<nWEAKPULL)|(0<<T0CKIPIN)|(0<<T0NEGEDGE)|(1<<PRESCALWDT); 
+	OPTION = (1<<nCHANWAKE)|(0<<nWEAKPULL)|(0<<T0CKIPIN)|(0<<T0NEGEDGE)|(0<<PRESCALWDT)|(0b101); 
 
 	//PWM for FAN: 25kHz, Dutycycle 0 to 100%
 	//25kHz = 40us = 0.04ms
@@ -78,14 +79,42 @@ void main(void)
 	//GP0 output init
 	GP0 = 0;
 
-	uint8_t pwmValue = 1;
+	uint8_t pwmValue = 3;
 	int i = 0;
+	
+	pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
+	TMR0 = 0;
 	
 	//main loop
 	while(1){
+		/*	// Timer test: works
+		GP0 = 1;
+		while(TMR0 < 128);
+		GP0 = 0;
+		while(TMR0 < 254);
+		*/ 
+		
+		
 		//read Rotary switch into variable pwmValue, because LSB of Rotary Switch is unused, shift 1 right
 		pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
 		
+		GP0 = 1;
+		//TMR0 = 0;
+		TMR0 = 254-(36*pwmValue);
+		//do some shit until timer = 36*pwmValue;
+		//= 0
+		//while(TMR0 != 0);
+		//while(TMR0 < (255-(36*pwmValue)));
+		while(TMR0 < 254);
+		
+		GP0 = 0;
+		TMR0 = 254-(36*(7-pwmValue));
+		//while(TMR0 != 0);
+		//while(TMR0 < (255-(36*(7-pwmValue))));
+		while(TMR0 < 254);
+		
+		
+		/*
 		GP0 = 1;
 		for(i=0;i<pwmValue;i++){
 			__delay_ms(2);
@@ -94,6 +123,7 @@ void main(void)
 		for(i=0;i<(7-pwmValue);i++){
 			__delay_ms(2);
 		}
+		*/
     }
 }
 
