@@ -50,6 +50,11 @@ along with PIC10F202Test.  If not, see <http://www.gnu.org/licenses/>.
 #define T0NEGEDGE	4	//T0SE
 #define PRESCALWDT  3  //PSA
 
+#define PWMout GP0
+#define SERIALin GP1
+#define SCK GP2
+#define LOAD GP0
+
 //Pin-Out Hex Rotary Encoder/Switch
 /* HEX-Switch	MCU
  * C			GND
@@ -66,7 +71,8 @@ void main(void)
     asm("MOVWF OSCCAL");
     
 	//GP0, GP1, GP2, GP3/MCLR
-    TRIS = 0b1110; //Inputs = 1, GP0 = Output, TRIS = TRISGPIO
+    //TRIS = 0b1110; //Inputs = 1, GP0 = Output, TRIS = TRISGPIO
+	TRIS = 0b1000; 
 	//ENABLE: weak-pullups, Timer0 intosc source, Prescaler for WDT - no Prescaler for Timer0
 	//Prescaler: 64 = 101
 	//Attention: no Weak-Pullup available on GP2
@@ -82,37 +88,67 @@ void main(void)
 	uint8_t pwmValue = 3;
 	int i = 0;
 	
-	pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
-	TMR0 = 0;
+	//pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
+	//TMR0 = 0;
 	
+	//LED shift register init
+	SERIALin = 0;
+	SCK = 0;
+	LOAD = 0;
+		
 	//main loop
 	while(1){
-		/*	// Timer test: works
-		GP0 = 1;
-		while(TMR0 < 128);
-		GP0 = 0;
-		while(TMR0 < 254);
-		*/ 
-		
-		
+		/*
 		//read Rotary switch into variable pwmValue, because LSB of Rotary Switch is unused, shift 1 right
 		pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
 		
 		GP0 = 1;
 		//TMR0 = 0;
 		TMR0 = 254-(36*pwmValue);
-		//do some shit until timer = 36*pwmValue;
-		//= 0
-		//while(TMR0 != 0);
-		//while(TMR0 < (255-(36*pwmValue)));
+		//do some shit until timer = 0
+		
 		while(TMR0 < 254);
 		
 		GP0 = 0;
 		TMR0 = 254-(36*(7-pwmValue));
-		//while(TMR0 != 0);
-		//while(TMR0 < (255-(36*(7-pwmValue))));
-		while(TMR0 < 254);
+		//do some shit until timer = 0
 		
+		while(TMR0 < 254);
+		*/
+		
+		//LED shift reg test:
+		/*
+		SERIALin = 1;
+		for(i=0;i<40;i++){
+			SCK = 1;
+			SCK = 0;
+			SERIALin = ~SERIALin;
+		}
+		LOAD = 1;
+		LOAD = 0;
+		*/
+		SERIALin = 1;
+		for(i=0;i<10;i++){
+			SCK = 1;
+			SCK = 0;
+		}
+		SERIALin = 0;
+		for(i=0;i<10;i++){
+			SCK = 1;
+			SCK = 0;
+		}
+		SERIALin = 1;
+		for(i=0;i<10;i++){
+			SCK = 1;
+			SCK = 0;
+		}
+		SERIALin = 0;
+		for(i=0;i<10;i++){
+			SCK = 1;
+			SCK = 0;
+		}
+		LOAD = 1;
+		LOAD = 0;
 		
 		/*
 		GP0 = 1;
