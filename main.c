@@ -72,7 +72,7 @@ void main(void)
     
 	//GP0, GP1, GP2, GP3/MCLR
     //TRIS = 0b1110; //Inputs = 1, GP0 = Output, TRIS = TRISGPIO
-	TRIS = 0b1000; 
+	TRIS = 0b1110; 
 	//ENABLE: weak-pullups, Timer0 intosc source, Prescaler for WDT - no Prescaler for Timer0
 	//Prescaler: 64 = 101
 	//Attention: no Weak-Pullup available on GP2
@@ -92,15 +92,17 @@ void main(void)
 	//TMR0 = 0;
 	
 	//LED shift register init
-	SERIALin = 0;
-	SCK = 0;
-	LOAD = 0;
+	//SERIALin = 0;
+	//SCK = 0;
+	//LOAD = 0;
 		
 	//main loop
 	while(1){
-		/*
+		
 		//read Rotary switch into variable pwmValue, because LSB of Rotary Switch is unused, shift 1 right
-		pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1;
+		//Because Rotary-Switch pulls low, value from switch has to be inverted ^0xFF
+		//pwmValue = ((GPIO ^ 0xFF) & 0b00001110) >> 1; //non inverted PWM Values for normal Fan
+		pwmValue = (GPIO & 0b00001110) >> 1;	//inverted PWM Values for Delta Fan
 		
 		GP0 = 1;
 		//TMR0 = 0;
@@ -114,7 +116,7 @@ void main(void)
 		//do some shit until timer = 0
 		
 		while(TMR0 < 254);
-		*/
+		
 		
 		//LED shift reg test:
 		/*
@@ -127,6 +129,8 @@ void main(void)
 		LOAD = 1;
 		LOAD = 0;
 		*/
+		
+		/*
 		SERIALin = 1;
 		for(i=0;i<10;i++){
 			SCK = 1;
@@ -149,6 +153,7 @@ void main(void)
 		}
 		LOAD = 1;
 		LOAD = 0;
+		*/
 		
 		/*
 		GP0 = 1;
